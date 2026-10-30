@@ -1,0 +1,1109 @@
+\documentclass[a4paper,11pt]{article}
+%\usepackage[fontsize=10.5pt]{scrextend}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{amsthm}
+\usepackage{amsmath,stmaryrd, mathrsfs}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{tikz-cd}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{import}
+\usepackage{enumitem}
+\usepackage{etoolbox}
+\usepackage[normalem]{ulem}
+\usepackage{soul}
+\usepackage{xcolor}
+\usepackage{upgreek}
+%\usepackage[notref,notcite]{showkeys}
+
+% Commands used in the manuscript.
+\newcommand{\RR}{\mathbf{R}}
+\newcommand{\NN}{\mathbf{N}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\mP}{\mathcal{P}}
+\newcommand{\mM}{\mathcal{M}}
+\newcommand*{\ud}{\mathrm{\,d}}
+
+% Commands used by the preamble helpers below.
+\newcommand{\mA}{\mathcal{A}}
+\newcommand{\mE}{\mathcal{E}}
+\newcommand{\mS}{\mathcal{S}}
+\newcommand{\mf}[1]{\mathfrak{#1}}
+
+\numberwithin{equation}{section}
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ left=32mm,
+ right=32mm,
+ %top=30mm,
+ %bottom=30mm,
+ }
+\setlength{\textheight}{8.5in}
+\setcounter{tocdepth}{2}
+\makeatletter
+\patchcmd{\l@section}
+	{\addvspace{1.0em \@plus\p@}}
+	{\addvspace{0.4em \@plus\p@}}
+	{}{}
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Theorems, lemmas, and so on...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{remarks}[theorem]{Remarks}
+\newtheorem{exercise}{Exercise}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{openproblem}[theorem]{Open Problems}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{maintheorem}{Theorem}
+\newtheorem{maincorollary}[maintheorem]{Corollary}
+\newtheorem{mainproposition}[maintheorem]{Proposition}
+\newtheorem{question}{Question}
+\newtheorem{assumption}{Assumption}
+\newtheorem{example}{Example}
+
+
+%% Comments
+\long\def\simonText#1{{\color{olive} Simon: #1}}
+
+
+
+\def\dd{\mathtt{d}}
+\def\proj{\mathbf{\Pi}}
+\def\embd{\uppi}
+\def\tdlim{N/L\to \rho}
+
+
+\def\gen{\mathcal{G}} % full particle generator
+\def\gens{\mS} % symmetric part (no scaling)
+\def\gena{\mA} %asymmetric part ( no scaling)
+\def\dich{\mE} % dirichlet form
+\def\var{\mathbb{V}\mathrm{ar}}
+\def\ff{\mf{f}}
+\def\II{\mathrm{I}}
+
+
+\def\grey#1{{\textcolor{gray}{#1}}}
+\newcommand{\gray}[1]{{\color{gray} #1}}
+\newcommand{\purple}[1]{{\color[rgb]{0.5,0,0.5}\relax#1}}
+
+\title{The Poisson--Dirichlet distribution is the unique invariant law for general uniform split–merge dynamics}
+\author{communicated by Simon Gabriel\footnote{Email: \href{mailto:s.gabriel@berkeley.edu}{s.gabriel@berkeley.edu},
+Department of Mathematics, University of California, Berkeley.} }
+\date{\today}
+
+
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	We study uniform split–merge dynamics on mass partitions. At each step, two parts are sampled independently in a size-biased manner. A repeated selection triggers a uniform split with probability \(\beta_s\). Two distinct selections trigger a merge with probability \(\beta_m\). We prove that \(\operatorname{PD}(\beta_s/\beta_m)\) is the unique invariant law in the previously unresolved regime \(\beta_s>\beta_m\), completing uniqueness for all parameter values. The proof uses finite paintbox partitions and a sublinear relative-entropy estimate to derive the Ewens sampling formula.
+\end{abstract}
+
+\hspace{.2cm}{\small\textit{{Keywords.}} Split-merge dynamics, Poisson-Dirichlet, Uniqueness of invariant measure.}
+
+\hspace{.2cm}{\small\textit{{MSC classification.}} Primary: 60K35, 60G09,
+	%60J25,
+	Secondary: 60C05.}
+
+
+%\tableofcontents
+
+
+\section{Introduction and main result}
+
+
+We define 
+\begin{equation*}
+\begin{aligned}
+\Delta = \bigg\{ x  = ( x_{1}, x_{2}, \ldots) \in [0,1]^{\NN} \, :\,  \sum_{i=1}^\infty x_i = 1 \bigg\} \,,
+\end{aligned}
+\end{equation*}
+and its ordered subset $ \nabla := \{ p \in \Delta \, : \, p_{1} \geq p_2 \geq \ldots \}$,
+both equipped with the $ \ell^{1}$-topology. 
+For every nonnegative summable sequence  $x$, $\mathrm{rank} (x)$ denotes its decreasing rearrangement (we append zeros, if $x$ is of finite length).
+
+
+We define the following discrete time Markov dynamic on $ \nabla $ for any $ \beta_{s}, \beta_{m} \in (0,1] $. 
+Given $ p \in \nabla $, we size-biased sample two parts $ p_{i} $ and $ p_{j} $ of $ p $, i.e. we choose $ i $ and $ j $ independently with probability $ p_{i} $ and $ p_{j} $, respectively. 
+Now independently, if $ i = j $, we split the part $ p_{i} $ uniformly into two parts with probability $ \beta_{s} $ (and do nothing with probability $1 - \beta_{s} $), otherwise we merge the two parts $ p_{i} $ and $ p_{j} $ with probability $ \beta_{m} $ (and do nothing with probability $1 - \beta_{m} $). 
+This Markov dynamic is more precisely represented by the 
+ split-merge kernel
+\begin{equation*}
+\begin{aligned}
+K_{\beta_{s}, \beta_{m}}(p, \bullet) 
+&= 
+\beta_{s}\sum_{i} p_{i}^{2}  \int_{0}^{1} \mathds{1}_{\bullet}(\mathbf{S}_{i,u }p) \, du 
++ \beta_{m}\sum_{i \neq j} p_{i} p_{j}  \mathds{1}_{\bullet}(\mathbf{M}_{i,j}p) \\
+&+
+\bigg( 1- \beta_{s} \sum_{i} p_{i}^{2}- \beta_{m}\sum_{i \neq j} p_{i} p_{j} \bigg)\mathds{1}_{\bullet}(p)\,,
+\end{aligned}
+\end{equation*}
+where the split and merge operators are defined as
+\begin{equation*}
+\begin{aligned}
+\mathbf{S}_{i,u }p&:= \mathrm{rank}(p_{1}, \ldots, p_{i-1},u  p_{i}, (1-u)p_{i}, p_{i+1}, \ldots)\,,
+\\
+\mathbf{M}_{i,j}p&:=\mathrm{rank}(p_{1}, \ldots, p_{i-1}, p_{i}+ p_{j}, \ldots, p_{j-1}, p_{j+1}, \ldots)\,.
+\end{aligned}
+\end{equation*}
+ Of course we set $\mathbf M_{j,i}=\mathbf M_{i,j}$.
+For every $ \beta_{s}, \beta _{m} \in (0,1]$, the associated Markov chain is stationary with respect to the Poisson--Dirichlet law $ \mathrm{PD} ( \beta_{s}/ \beta_{m})$, see for example \cite{MWZZ2002}. The Poisson--Dirichlet distribution $\mathrm{PD}( \theta )$, $\theta >0 $, is the probability measure that can be defined through the following stick-breaking procedure \cite{Fen10}: Let $U_1,U_2,\ldots$ be independent
+$\operatorname{Beta}(1,\theta)$-distributed random variables and define
+\begin{equation*}
+\begin{aligned}
+V_1 := U_1,\qquad
+    V_2 := (1-U_1)U_2,\qquad
+    V_3 := (1-U_1)(1-U_2)U_3,\ldots\,.
+\end{aligned}
+\end{equation*}
+In other words, starting with a stick of length one we iteratively break off random fractions proportional to $ U_{i}$, and put the designated broken off piece (say the one we hold in our right hand) to the side. Subsequent decreasing reordering of the entries of $ ( V_{i})_{i \in \NN}$, i.e. applying $ \mathrm{rank}$, yields the law $\mathrm{PD}( \theta )$.
+The PD-law can also be realised as a limit of Dirichlet distributions. 
+
+\subsection{The main result}
+
+Although $\mathrm{PD}(\beta_s/\beta_m)$ is known to be stationary for the
+split--merge process throughout the entire parameter range, its uniqueness as
+a stationary distribution remained partially open. Our main result resolves this
+question:
+
+\begin{theorem}\label{thm_main}
+For every $ \beta_{s}, \beta_{m} \in (0,1] $, the Poisson-Dirichlet distribution $ \mathrm{PD}(\beta_{s} / \beta_{m}) $ is the unique invariant probability measure of the uniform split-merge process with kernel $ K_{\beta_{s}, \beta_{m}} $.
+\end{theorem}
+
+In the case $ \beta_{s}= \beta_{m}$,
+Theorem~\ref{thm_main} was proved in \cite{DMWZZ2004}. An alternative proof was later provided in \cite{Schramm2005}, which extends to the regime $ \beta_{s} \leqslant \beta_{m} $ \cite[Theorem~7.1(b)]{GUW2011}. By contrast, the regime $\beta_s>\beta_m$ remained unresolved, although the corresponding statement was widely believed to hold.
+
+
+\begin{remark}\label{rem_notalltheta}
+The extension of the coupling argument in \cite{Schramm2005} to unequal split and merge probabilities relies on a monotonicity estimate that holds for $\beta_s\leqslant\beta_m$.
+More precisely, one couples two split--merge dynamics on $\nabla$, one starting from an invariant measure $\mu$ and the other from $\mathrm{PD}(\beta_s/\beta_m)$.
+The coupling tries to create matches between blocks of equal size in the two chains, possibly at different positions, and updates matched blocks together.
+When a split in one chain is paired with a merge in the other, the split adds at most one unmatched block and the merge removes at least one (with high probability).
+While for $\beta_s\leqslant\beta_m$ a split can always be coupled with a merge, such that the total count of unmatched blocks does not increase,
+it fails for $\beta_s>\beta_m$.
+%good event: split and merges only act and create $ > \varepsilon$ blocks up to a certain time
+%problem comes from the fact that when one chain merges and the other one splits. 
+\end{remark}
+
+Throughout the remainder of the paper we will restrict ourselves to the case $ \beta_{s} > \beta_{m} $, for the sake of a simpler notation. 
+%TODO IN FUTURE VERSION
+%However, we expect that the proof extends to any choice $ \beta_{s}, \beta_{m} \in (0,1]$ XXX.
+Without loss of generality, we will assume that $ \beta_{s} = 1 $ and $ \beta_{m} = \theta^{-1}< 1 $. Indeed, we have 
+\begin{equation*}
+\begin{aligned}
+K_{\beta_s,\beta_m}
+=\beta_s K_{1,1/\theta}+ (1-\beta_s)\mathrm{id}\,.
+\end{aligned}
+\end{equation*}
+This proportional increase in probabilities does not affect the invariant measure. For brevity, we will write $ K_{1/ \theta} = K_{1, 1/ \theta} $ for the split-merge kernel in this regime.
+
+\subsection{Consequences of the main result}
+
+A direct application of Theorem~\ref{thm_main} (and the initial motivation for this paper) concerns scaling limits of condensing interacting particle systems. 
+More precisely, it identifies the thermodynamic limits of certain product-form stationary measures as rescaled $\mathrm{PD}(\theta)$, by showing that these limits are invariant under split-merge dynamics \cite{ChlebounGabrielGrosskinsky2022}. Thus, our theorem removes the restriction $\theta\leq 1$ in \cite{ChlebounGabrielGrosskinsky2022}.
+
+Split-merge dynamics and the Poisson-Dirichlet law also appear in the study of quantum-spin systems and related random-loop models, whose configurations consist of collections of closed paths on a lattice or in space--time  \cite{GUW2011,BenassiUeltschi2020}.
+In several such models, the macroscopic loops are conjectured to evolve effectively according to uniform split--merge dynamics, leading to Poisson--Dirichlet statistics with parameter $\theta>1$.
+The relevant parameters include the Heisenberg model ($\theta =2$) \cite{GUW2011}
+ and spin-one models ($\theta=\tfrac{3}{2},3$) \cite{CaciEtAl2023}.
+Theorem~\ref{thm_main} supplies the identification of the invariant
+law throughout this parameter range, once 
+every subsequential limit of the normalised loop-length distributions has been shown to be supported on $\nabla$ and invariant under the corresponding uniform split--merge dynamics, see also \cite[Section~4.2]{BenassiUeltschi2020}.
+However, establishing such invariance from the underlying spatial loop model remains a separate, model-dependent problem.
+
+
+\paragraph{Statement on the use of AI.}
+The present paper was developed as a test case for the agentic workflow
+described in \cite{xu2026agents}. An initial proof of
+Theorem~\ref{thm_main} was generated by OpenAI Codex using GPT 5.6 Sol. The generated proof used a cyclic-lift representation. 
+After reviewing the proof, the author replaced it by a partition-based reformulation
+which was refined through subsequent interactions with the model. 
+Almost all of the manuscript was written in August 2026.
+AI assistance with the prose was limited to occasional
+editorial suggestions (including this statement). GPT 6 Astra was used for mathematical review and final proofreading. 
+
+The author takes full
+responsibility for the correctness and presentation of the paper. 
+Materials documenting the process, including the initially generated proof, are
+available at \url{https://github.com/KugelschreiberY/PD_unique_splitmerge}.
+
+
+\section{Proof of the main result}
+
+\subsection{Paintbox sampling}\label{sec_paintbox_def}
+Write $\mathcal P_n$ for the set of partitions of $[n]$.
+For every $ x \in \Delta $ we can associate a probability law on $ \NN$ by sampling in a size-biased fashion. Namely, we define $ \mathbf{P}_{x}$ to be the law given in terms of
+\begin{equation*}
+\begin{aligned}
+\mathbf{P}_{x}( Z = i )= x_{i}\,.
+\end{aligned}
+\end{equation*}
+Likewise, we write $ \mathbf{P}^{\otimes n}_{x}$ for the product measure that samples $n$  indices $ ( Z_{1}, \ldots, Z_{n})$ independently, with replacement. This is often known as paintbox sampling.
+
+Given $ ( Z_{1}, \ldots, Z_{n})$, we can define a partition $ \Pi_{n}$ of $ [n]$ by grouping together those indices that sampled the same box, i.e. $ i $ and $j$ lie in the same block of $ \Pi_{n}$ whenever $ Z_{i}= Z_{j}$. We denote the law of the resulting random partition by $ \Phi_{n}( x, \bullet)$.
+The resulting partition forgets about the precise values of $Z$ but only remembers which entries agree.
+
+Lastly, we denote the number of distinct indices (analogously the number of blocks in the corresponding partition) by 
+\begin{equation*}
+\begin{aligned}
+R_{n} := |\{ Z_{1}, \ldots, Z_{n}\}|\,.
+\end{aligned}
+\end{equation*}
+
+% \begin{example}\label{exmpl_}
+% Let $ n =5$ and 
+% consider an aribtrary $ x \in \Delta $. Assume we sampled $ Z_{1}= Z_{3}= i$, $ Z_{2}=j$, and $ Z_{4} = Z_{5}= k$, for distinct $i,j,k \in \NN$ (which is an event of probability $ p_{i}^{2}p_{j}p_{k}^{2}$).
+% The resulting partition is $ \{1,3\}, \{2\}, \{4,5\}$, and $ R_{5}= 3$.
+% \end{example}
+
+\subsection{Random partitions}
+
+
+We say $ \Pi_{n}$ is an exchangeable random partition of $[n]$ if its law is invariant under relabelling. In particular, $ \Pi_{n}$ is exchangeable if it is generated by a  sequence of iid random variables $ (Z_{1}, \ldots, Z_{n})$, see for example the paintbox sampling above.
+
+	% The paintbox sampling introduced above is a special case when considering a sequence of random variables $ (Z_{i})_{i \in \NN}$ that is exchangable, i.e. for any $n$
+	% the vector $ (Z_{1}, \ldots, Z_{n})$ is invariant in law under permutation of the entries (which clearly holds for iid samples).
+
+
+
+	% We say that a sequence of random variables $ (X_{i})_{i \in \NN}$ is exchangable, if for any $ n $ the vector $ (X_{1}, \ldots, X_{n})$ is invariant in law under permutation of the entries.
+	% For every such $ (X_{1}, \ldots, X_{n})$ we can define a partition of $[n]$ by combining indices satisfying $ X_{i}= X_{j}$ into joint blocks. 
+
+
+
+The \emph{exchangeable partition probability function} (EPPF) of an exchangeable random partition $ \Pi_{n}$ of $[n]$ is the associated probability mass function expressed only in block sizes, i.e.
+\begin{equation}\label{eq_eppf}
+\begin{aligned}
+\PP( \Pi_{n}= \{B_{1}, \ldots, B_{r}\})=: p ( |B_{1}|, \ldots ,|B_{r}|)\,,
+\end{aligned}
+\end{equation}
+which by definition is symmetric.
+
+Analogous to the finite setting, we can define an infinite partition $ \Pi$ of $ \NN$ using an exchangeable sequence of random variables $ (X_{i})_{i \in \NN}$ with law $ \mu$. As in the finite case, this yields an EPPF $p$ which is consistent when constructing $ \Pi_{n}$ on $[n]$ through $ (X_{1}, \ldots, X_{n})$, see \cite[Section~2.2]{Pitman2006}.
+Notice that we can always restrict a partition $ \Pi$ on $ \NN$ to one on $ [ n]$ by removing all entries for $k >n $.
+
+\begin{lemma}[Finite EPPFs determine the infinite partition law]
+\label{lem_fdd}
+Let $\Pi$ and $ \overline{\Pi}$ be random partitions of
+$\NN$. If
+\begin{equation*}
+\begin{aligned}
+\PP ( \Pi |_{[n]} = \pi) = \PP ( \overline{\Pi} |_{[n]} = \pi)\,, \quad \forall n \in \NN\,, \ \pi \in \mP_{n}\,,
+\end{aligned}
+\end{equation*}
+then $
+\Pi\overset{d}{=}\overline{\Pi}$.
+\end{lemma}
+
+
+For example, the partition $ \Pi_{\rm PD}$ generated through paintbox sampling with respect to $ \mathrm{PD}( \theta) $, has EPPF 
+\begin{equation}\label{eq_pd_part}
+\begin{aligned}
+\PP_{\mathrm{PD}(\theta)}( \Pi_{\rm PD } |_{[n]}= \pi)
+= 
+\theta^{|\pi|}
+\frac{\Gamma ( \theta)}{ \Gamma( n+\theta)} 
+\prod_{B \in \pi}(|B|-1)! \qquad \forall \pi \in \mP_{n}\,,
+\end{aligned}
+\end{equation}
+see for instance \cite[Equations~(2.19)--(2.20)]{Pitman2006}.
+\medskip
+
+Kingman's representation theorem expresses every exchangeable
+random partition as a mixture of paintbox partitions.
+To this end, we introduce
+the extended space
+$\overline\nabla:=\{p\in[0,1]^{\mathbb N}:p_1\ge p_2\ge\cdots,\ \sum_i p_i\le1\}$,
+ with the product topology.
+Whenever sampling from the remaining mass $1-\sum_i p_i$,
+a separate singleton block is formed.
+
+\begin{lemma}[Kingman's representation]\label{lem_kingman}
+Let $ \Pi$ be a random exchangeable partition of $ \NN$. Then there exists a unique law $ \mu \in \mM_{1}( \overline\nabla)$ such that $ \Pi$ is the partition generated through paintbox sampling with respect to $ \mu$.
+\end{lemma}
+
+This is Kingman's representation theorem \cite{Kingman1978}, see also \cite[Theorem~2.2]{Pitman2006}.
+
+
+
+
+\subsection{Proof of Theorem~\ref{thm_main}}
+
+If $ \mu$ is a stationary measure of the split-merge process, 
+then it suffices to prove
+\begin{equation}\label{eq_part_main}
+\begin{aligned}
+\PP ( \Pi_{\mu} |_{[n]} = \pi) = 
+\theta^{|\pi|}
+\frac{\Gamma ( \theta)}{ \Gamma( n+\theta)} 
+\prod_{B \in \pi}(|B|-1)! \qquad \forall \pi \in \mP_{n}\,,
+\end{aligned}
+\end{equation}
+to identify it as the Poisson--Dirichlet law $ \mathrm{PD}( \theta)$, as a consequence of Lemmas~\ref{lem_fdd} and~\ref{lem_kingman}.
+The relation \eqref{eq_part_main} is the content of Corollary~\ref{cor_main}.
+Throughout the remainder of the paper, denote by $ \nu_{n}$ the law of $ \Pi_{\mu}|_{[n]}$.
+Analogously,  $ \nu_{n} := \mu \Phi_{n} $ where $ \Phi_{n}$ was defined in Section~\ref{sec_paintbox_def}.
+
+\begin{proof}[Proof of Theorem~\ref{thm_main}]
+We restrict ourselves to the case $ \theta>1$, since $ \theta \in (0,1]$ has been treated already in \cite[Theorem~7.1(b)]{GUW2011} separately.
+Moreover, it suffices to establish uniqueness of invariant measures on $ \nabla$, since invariance (in fact reversibility) is established in \cite[Theorem~3(a)]{MWZZ2002}.
+
+Let $ \mu$ be an invariant law with respect to $ K_{1,1/ \theta}$.
+Furthermore, denote by $ \Pi $ the random partition of $ \NN$ induced by size-biased sampling under $ \mu$, namely $ k ,\ell \in \NN$ lie in the same subset provided $ Z_{k}= Z_{\ell}$.
+Likewise, $ \nu_{n}$ induces a random partition $ \Pi_{n}$ of $[n]$ and by definition of $ \nu_{n}$ through $ \Phi_{n}$, we have $ \Pi_{n} =\Pi |_{[n]}  $.
+
+Corollary~\ref{cor_main} yields \eqref{eq_part_main} for every $n \in \NN$ and $ \pi \in \mP_{n}$.
+Thus, Lemma~\ref{lem_fdd} implies that the law of $ \Pi$ must agree with the law of $ \Pi_{\mathrm{PD}}$.
+Lastly, 
+Kingman's representation (Lemma~\ref{lem_kingman}) yields a one-to-one correspondence between laws of exchangeable partitions and laws on $ \overline\nabla$ via paintbox sampling.
+This concludes $ \mu= \mathrm{PD}( \theta)$.
+\end{proof}
+
+
+
+
+%TODO IN FUTURE VERSION
+%\subsection{Conceptual insights}
+
+%add subsection that explains more the conceptual insights of the proof, in particular intuition of the entropy argument, maybe holley strook??. also all of this very much feels like lyapunov function stuff. todo: explain and make connections 
+
+
+
+\section{Identification of the finite partition laws}
+
+To prove Corollary~\ref{cor_main}, we lift the split--merge dynamics to finite set partitions and establish its relation to the original process through paintbox sampling.
+Coherence and a sublinear relative entropy estimate then allow us to transfer stationarity of the original process to the finite partition laws $\nu_n$.
+Finally, the resulting balance relations identify $\nu_n$ with the Ewens measure~$\eta_n$.
+
+
+\subsection{Boundary intertwining}
+
+Let $ a,b \in [n]$ be distinct. We define a Markov kernel $ Q_{n}^{a,b}$ on $ \mP_{n}$. 
+Fix $ \pi \in \mP_{n}$, then 
+\begin{itemize}
+	\item If $ a,b$ lie in distinct blocks in $ \pi$, then $ Q_{n}^{a,b}$ joins the two blocks with probability $ \theta^{-1}$ and leaves $ \pi$ unchanged with probability $ 1- \theta^{-1}$.
+	
+	\item If $ a,b $ lie in the same block $C$ in $ \pi$, then the block is split according to the following rule: for every partition $ A \sqcup B = C \setminus \{a,b\}$ the block $ C$ is replaced by the blocks $ \{a\}\cup A $ and $ \{b\} \cup B$ with probability 
+	 \begin{equation}\label{eq_Q_split}
+	\begin{aligned}
+\int_{0}^{1} u^{|A|}(1-u)^{|B|}\ud u	
+=
+\frac{|A|! |B|!}{(|C|-1)!} \,.
+\end{aligned}
+	\end{equation} 
+	That is, one first samples a uniform random variable $U$ and then assigns each element to $ A$ with probability $U$, independently conditional on $U$.
+\end{itemize}
+
+
+Let $ n \in \NN$ and denote by  $ R_{A}: \mP_{n} \to \mP_{n- |A|}$ the operator that removes all labels in $ A $ and relabels the remaining ones in increasing order.
+The following lemma shows that the family of measures $ (\nu_{n})_{n}$ is coherent in the sense that $ R_{A}$ acts as a projection, even after application of $ Q $.
+\begin{lemma}[Coherence]\label{lem_coherence}
+	Let $ n \geqslant 2$ and $ A \subset  [n]$, then 
+	\begin{enumerate}
+	\item[(i)] $ ( R_{A})_{\ast} \nu_{n}=\nu_{n- |A| } $
+	\item[(ii)] $ ( R_{A})_{\ast} (\nu_{n} Q^{a,b}_{n})=\nu_{n -|A| }Q^{a,b}_{n-|A|}$ for all distinct $ a,b < \min  A $.
+	\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+The statement in (i) is immediate, since removing paintbox samples does not affect other paintboxes due to independent sampling. 
+
+For statement (ii) we notice that  the merging of blocks is unaffected by removal of labels $ A$. Likewise when splitting, each label is associated to the $ a$-block or $ b$-block independently (conditional on $U$) and their later removal  has no effect.
+\end{proof}
+
+
+The following result relates the split-merge dynamic to the dynamic on partitions driven by $ Q_{n}^{a,b}$. This requires two arbitrary drivers $ a,b $ that take the role of sampling the split-merge action in $ K_{1/ \theta}$. This explains the discrepancy in degrees of $\Phi$ in the statement below.
+
+\begin{proposition}[Split--merge intertwining]\label{prop_intertwining}
+	Let $ n \geqslant 2$.
+For every probability measure $ \mu$ on $ \nabla $, and distinct $ a,b \in [n]$
+\begin{equation*}
+\begin{aligned}
+	(R_{a,b})_{\ast}
+\mu \Phi_{n} Q_{n}^{a,b} = \mu K_{1/\theta}\Phi_{n-2}\,.
+\end{aligned}
+\end{equation*}
+\end{proposition}
+
+
+
+\begin{proof}
+It suffices to prove for every $ p \in \nabla$
+\begin{equation*}
+\begin{aligned}
+	\sum_{\substack{\pi ' \in \mP_{n}\\R_{a,b} \pi'= \sigma}}
+	\sum_{\pi \in \mP_{n}}
+ \Phi_{n}(p, \pi) Q_{n}^{a,b} ( \pi ,\pi'  ) = \int K_{1/\theta}(p,dp')\Phi_{n-2}(p',\sigma)\,, \quad \forall \sigma \in \mP_{n-2}\,.
+\end{aligned}
+\end{equation*}
+Let $ (I,J) \sim \mathbf{P}^{\otimes 2}_{p}$, which will play two roles: for the left-hand side it will denote the marginal distribution of $ (Z_{1}, \ldots, Z_{n})\sim\mathbf{P}^{\otimes n}_{p}$ for $a,b$, whereas for the right-hand side it will denote the choice of the two blocks the split-merge is acting on.
+For convenience, we condition on the event $ (I,J)=(i,j)$ which occurs with probability $p_{i} p_{j}$, as well as on an independent $ \mathrm{Unif}[0,1]$ random variable $U=u$.
+Next we compare both the left and the right--hand side and prove the identity on each splitting/merging event.
+\begin{itemize}
+\item
+If $i= j$, then (on the left-hand side) $ Q$ will split the block $C$ that both $a$ and $b$ lie in.
+Now assign each  element in $ C \setminus \{a,b\}$ the label $ i_{a}$ with probability $ u$, and the label $ i_{b} $ with probability $(1-u)$. The elements labelled $i_{a}$ will be grouped with $a$, whereas the elements labelled $ i_{b}$ will be grouped with $b$. We denote the resulting partition by $ \Pi' $.
+
+
+Now, the law $ \Phi_{n-2}(\mathrm S_{i,u}p,\cdot)$ is the same as  $ \Phi_{n-2}(p,\cdot)$ with the only difference that if the paintbox samples $i$, it will be instead given label $ i_{a}$ with probability $u$ and label $ i_{b}$ with probability $ (1-u)$, cf. \eqref{eq_Q_split}.
+This yields
+\begin{equation*}
+\begin{aligned}
+\mathbb P\bigl(R_{a,b}\Pi'=\sigma \mid I=J=i,U=u\bigr)
+=
+\Phi_{n-2}(\mathrm S_{i,u}p,\sigma)\,.
+\end{aligned}
+\end{equation*}
+To see that  deletion by $ R_{a,b}$ does not destroy this relation, we realise the paintbox leading to $ \Phi_{n-2}(\mathrm{S}_{i,u}p)$ and 
+ insert $a,b $ back into $[n-2]$ (before forgetting their exact labels) with fixed labels $ i_{a}$ and $ i_{b}$. This extends $ \Phi_{n-2}(\mathrm S_{i,u}p,\cdot)$ to a random partition in $ \mP_{n}$, which agrees with $ \Pi' $.	
+
+
+
+Averaging over $U=u$, will yield the required integral present in both split operations.
+
+\item Let $V\sim\mathrm{Bernoulli}(\theta^{-1})$ be independent of all samples and $U$. If $ i\neq j$, then $ Q_{n}^{a,b}$ joins the two blocks that $ a,b$ lie in with probability $ \PP(V=1)= \theta^{-1}$. Again it will be convenient to condition on  $V=1$.
+ Likewise $ K_{1/\theta}( p, \bullet)$ will merge $ p_{i}$ and $ p_{j}$ provided $V=1$, such that 
+\begin{equation*}
+\begin{aligned}
+\mathbb P\bigl(R_{a,b}\Pi'=\sigma \mid I=i, J=j, V=1\bigr)
+=
+\Phi_{n-2}(\mathrm M_{i,j}p,\sigma)\,.
+\end{aligned}
+\end{equation*}
+On the other hand, for $V=0$ (with probability $ 1- \theta^{-1}$) the partition is unchanged and after deleting $a,b$, its conditional law is $\Phi_{n-2}(p,\cdot)$.
+\end{itemize}
+This concludes the proof.
+\end{proof}
+
+
+
+\begin{corollary}\label{cor_intertw}
+Let $ \mu$ be an invariant probability measure with respect to $ K_{1/\theta}$ and write $ \nu_{n}= \mu \Phi_{n}$. Then 
+\begin{equation*}
+\begin{aligned}
+( R_{a,b})_{\ast}
+\nu_{n} Q_{n}^{a,b}= \nu_{n-2}\,, \quad \forall n \geqslant 2\,.
+\end{aligned}
+\end{equation*}
+\end{corollary}
+
+
+\subsection{Control of the relative entropy}
+
+
+We define the Ewens measure 
+\begin{equation}\label{eq_ewens_formula}
+\begin{aligned}
+\eta_{n} ( \pi)
+=
+\frac{
+\theta^{|\pi|}}{
+( \theta)_{n}}
+\prod_{B \in \pi} ( |B| -1)!\,,
+\end{aligned}
+\end{equation}
+where $ ( \theta)_{n}:= \Gamma ( n + \theta)/ \Gamma( \theta)$. By definition this family of measures is coherent, i.e. $ (R_{A} )_{\ast}\eta_{n}  = \eta_{n-|A|}$ since $\eta_n=\mathrm{PD}(\theta)\Phi_n$ by \eqref{eq_pd_part}. Moreover, the intertwining kernel $Q_n^{a,b}$ is $\eta_n$-reversible: consider a split $ \pi \mapsto \pi' $
+that replaces a block $C$ containing $a,b$ by $C_1 \ni a $ and $C_2 \ni b$, where $C=C_1\sqcup C_2$.
+ Hence, \eqref{eq_ewens_formula}, \eqref{eq_Q_split}, and the merge probability $ \theta^{-1}$ yield 
+\begin{equation*}
+\begin{aligned}
+\frac{\eta_n(\pi^{\prime})}{\eta_n(\pi)}
+=\theta\frac{(|C_1|-1)!(|C_2|-1)!}{(|C|-1)!}
+=
+\frac{Q_n^{a,b}(\pi,\pi^{\prime})}{Q_n^{a,b}(\pi^{\prime},\pi)}  \,.
+\end{aligned}
+\end{equation*}
+
+
+
+\begin{lemma}[Sublinear entropy]\label{lem_entropy1}
+	For every $n \geqslant 2$, we have 
+	\begin{equation*}
+	\begin{aligned}
+	H ( \nu_{n}\| \eta_{n}) \lesssim_{\theta}
+	( \log{ n })^{2}\,.
+	\end{aligned}
+	\end{equation*}
+
+\end{lemma}
+
+
+
+\begin{proof}
+To every partition $\pi\in\mathcal P_n$ we associate a block profile
+$a=(a_1,\ldots,a_n)$ where $a_k:=\#\{B\in\pi:|B|=k\}$.
+For a random partition, we denote its (random) block profile by $A=(A_1,\ldots,A_n)$.
+
+First, we notice that $ \nu_{n}$ only depends on the block profile of a partition, cf. \eqref{eq_eppf}. 
+By definition the same is true for $ \eta_{n}$. Thus, conditioning on a block profile $ a$, we have $ \nu_n ( \cdot |a)= \eta_{n}( \cdot | a)$ which are uniform distributions amongst the partitions 
+\begin{equation*}
+\begin{aligned}
+\frac{n!}{\prod_{k} (k!)^{a_{k}} a_{k}!} =:N(a)
+\end{aligned}
+\end{equation*}
+satisfying the given block profile $a$.
+ Therefore, denoting by $\overline\nu_n$ the law of $ A$ under $ \nu_{n}$ and similarly for $ \overline{\eta}_{n}$, we have the explicit formula 
+\begin{equation*}
+\begin{aligned}
+H ( \nu_{n}\| \eta_{n}) 
+=
+\sum_{a} \sum_{\pi \leftrightarrow a} \nu_{n}(\pi) \log{ \frac{\nu_{n}( \pi)}{\eta_{n}(\pi)} } 
+=
+\sum_{a} \sum_{\pi \leftrightarrow a} \frac{\overline{\nu}_{n}(a)}{N(a)} \log{ \frac{ \overline{\nu}_{n}( a)}{ \overline{\eta}_{n}(a)} } 
+=
+H ( \overline{\nu}_{n}\| \overline{\eta}_{n}) \,.
+\end{aligned}
+\end{equation*}
+For $ \overline{\eta}_{n}$ we have the explicit formula 
+\begin{equation*}
+\begin{aligned}
+\overline{\eta}_{n}(a) = \sum_{\pi \in \mP_{n}}\eta_{n}( \pi) \mathds{1}_{\pi \text{ has profile } a} 
+%=
+%\frac{n!}{\prod_{k} (k!)^{a_{k}} a_{k}!} 
+%\theta^{\sum_{k} a_{k}}
+%\frac{\Gamma ( n + \theta)}{ \Gamma( \theta)} 
+%\prod_{k} (( |k| -1)!)^{a_{k}}
+=
+\theta^{\sum_{k} a_{k}}
+\frac{n!}{( \theta)_{n}} 
+\prod_{k} \frac{1}{k^{a_k}a_k!}\,.
+\end{aligned}
+\end{equation*}
+Then using the fact that $ \mathrm{Ent}( \overline{\nu}_{n}) \geqslant  0$ yields
+\begin{equation*}
+\begin{aligned}
+H ( \overline{\nu}_{n}\| \overline{\eta}_{n})
+& \leqslant -\sum_{a} \overline{\nu}_{n}( a) 
+ \log{ \overline{\eta}_{n}( a)} 
+ = \EE_{\nu_{n}}[ - \log{ \overline{\eta}_{n}(A)} ]\\
+ & = 
+ - \EE_{\nu_{n}}[ R_{n}] \log{ \theta} 
+ + \log{\frac{( \theta)_{n}}{n!}} 
+ + \EE_{\nu_{n}}\bigg[ \sum_{k}A_{k} \log{k}  \bigg]
+ + \EE_{\nu_{n}}\bigg[  \log{\Big( \prod_{k}A_{k}!\Big)}  \bigg]\,,
+\end{aligned}
+\end{equation*}
+where we recall that $ \sum_{k} A_{k} = R_{n}$.
+Notice that the first term on the right-hand side can be dropped, since $ \theta>1$, and the second term yields $ \log{((\theta)_{n}/ n!)} \lesssim_{\theta} \log{n} $. The remaining two terms can be bounded as follows:
+\begin{equation*}
+\begin{aligned}
+\EE_{\nu_{n}}\bigg[ \sum_{k}A_{k} \log{k}  \bigg]
+ + \EE_{\nu_{n}}\bigg[  \log{\Big( \prod_{k}A_{k}!\Big)}  \bigg]
+ &\leqslant \EE_{\nu_{n}}[ R_{n}] \log{n} 
+ + \EE_{\nu_{n}}\big[  \log{(n^{R_{n}})} \big]\\
+ & \leqslant 2 \EE_{\nu_{n}}[ R_{n}] \log{n} 
+ \lesssim_{\theta} ( \log{n} )^{2}\,,
+\end{aligned}
+\end{equation*}
+where the final step is  a consequence of Corollary~\ref{cor_R}.
+\end{proof}
+
+
+
+\subsection{Identification of the Ewens sampling formula}
+
+
+\begin{lemma}\label{lem_nuQ_inv}
+	For every $n \in \NN$ and distinct $ a,b \in [n]$, we have $\nu _{n} Q^{a,b}_{n}= \nu_{n}$.
+\end{lemma}
+
+The proof of this lemma will be stated at the end of this section. 
+First, we conclude that invariance of $\nu_n$ with respect to $ Q_{n}^{a,b}$ immediately yields identification of $ \nu_{n}$ as the Ewens sampling formula.
+
+
+\begin{corollary}\label{cor_main}
+For every $n $ we have $ \nu_{n}= \eta_{n}$. In other words, 
+\begin{equation}
+\begin{aligned}
+\PP_{\mu}( \Pi|_{[n]}= \pi)
+=
+\frac{
+\theta^{|\pi|}}{
+( \theta)_{n}}
+\prod_{B \in \pi}(|B|-1)!\,, \quad \forall \pi \in \mP_{n}\,.
+\end{aligned}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+	Let $ \pi \in \mP_{n}$ and fix distinct $ a, b \in [n]$ such that they lie in the same block $C$ (assuming such a block exists). Moreover, define $ \pi' $ to be the partition generated from $ \pi$ by splitting off the singleton $\{a\}$ from $C$, i.e. replacing $ C$ by $ \{a\} $ and $C \setminus \{a\}$.
+	By Lemma~\ref{lem_nuQ_inv}, we have 
+	\begin{equation*}
+	\begin{aligned}
+	\nu_{n} ( \pi') 
+	&= \nu_{n} Q^{a,b}_{n}( \pi') = 
+	\nu_{n} ( \pi ) Q^{a,b}_{n} ( \pi, \pi'  )
+	+	\nu_{n} ( \pi' ) Q^{a,b}_{n} ( \pi', \pi'  )\\
+	&= 
+	\frac{ (|C|-2)!}{(|C|-1)!}
+	\nu_{n} ( \pi)
+	+
+	( 1- \theta^{-1})
+	\nu_{n} ( \pi' )\,,
+	\end{aligned}
+	\end{equation*}
+	which implies $ \nu_{n} ( \pi)= \theta^{-1} (|C|-1) \nu_{n}( \pi' )$.
+	Consequently, we can decompose the blocks of any partition $ \pi$ into singletons, i.e. the identity, by iteratively applying $ Q_{n}$ with suitable choices of $a,b$. It will take $ n - | \pi|$ such splittings, such that 
+\begin{equation*}
+\begin{aligned}
+	\nu_{n}( \pi)
+	=
+	\nu_{n} ( \mathrm{id})
+	\theta^{| \pi| -n }
+	\prod_{C  \in \pi} ( |C| -1)!	
+  \,.
+\end{aligned}
+\end{equation*}
+On the other hand, 
+unit total mass requires 
+\begin{equation*}
+\begin{aligned}
+\theta^{n} \nu_{n}( \mathrm{id})^{-1} 
+%= \theta^{n} \nu_{n}( \mathrm{id})^{-1} \sum_{\sigma} \nu_{n}( \sigma)
+= \sum_{\pi \in \mP_{n}} \theta^{ | \pi |} \prod_{C \in \pi}(|C| -1)!
+= ( \theta)_{n} \,,
+\end{aligned}
+\end{equation*}
+where the last equality follows from normalization of $\eta_n$, see \eqref{eq_pd_part}.
+Hence, the probability mass function of $ \nu_{n}$ agrees with the Ewens distribution $ \eta_{n}$.
+The proof is complete after noting that $ \Pi |_{[n]} \sim \nu_{n}$.
+\end{proof}
+
+
+Before moving to the proof of Lemma~\ref{lem_nuQ_inv}, we notice the following useful fact:
+
+\begin{lemma}\label{lem_Q2}
+Let $\Omega$ be a finite set and $ Q$ a Markov kernel that is $ \eta $-reversible. Then for every probability law $ \nu \ll \eta$ on $ \Omega$, we have
+\begin{equation*}
+\begin{aligned}
+H ( \nu Q \| \eta) = H ( \nu \| \eta)\quad \Rightarrow \quad \nu Q^{2} = \nu\,.
+\end{aligned}
+\end{equation*}
+\end{lemma}
+
+\begin{proof}
+The proof is a simple consequence of the inequality 
+\begin{equation*}
+\begin{aligned}
+	H  ( \nu \| \nu Q^{2} )
+	\leqslant 
+ H ( \nu \| \eta) - H ( \nu Q \| \eta)  \,,
+\end{aligned}
+\end{equation*}
+see for example \cite[Theorem~6]{HarremoesHolst2009}.
+\end{proof}
+
+
+\begin{proof}[Proof of Lemma~\ref{lem_nuQ_inv}]
+	We split the proof into smaller blocks.\\
+
+	\textbf{Step 1.}
+Let $n \in \NN$ and $ a,b \in [n]$, and let us abbreviate $ Q_{n}= Q_{n}^{a,b}$.
+If we know that 
+\begin{equation}\label{eq_supp_ent}
+\begin{aligned}
+H ( \nu_{n}Q_{n}\| \eta_{n})	=
+H( \nu_{n} \| \eta_{n} )\,,
+\end{aligned}
+\end{equation}
+then Lemma~\ref{lem_Q2} will imply that $ \nu_{n}Q_{n}^{2}= \nu_{n}$. The desired invariance with respect to $ Q_{n}$ holds if we establish that the kernel is aperiodic.
+Indeed, fix any partition $ \pi \in \mP_{n}$ and denote by $ C_{1}, \ldots C_{r} \in \pi $ all blocks that neither contain $ a$ nor $ b$. The kernel $ Q_{n}= Q_{n}^{a,b}$ only gives positive mass to partitions with the given block structure $ C_{i}$, i.e. that lie in 
+\begin{equation*}
+\begin{aligned}
+\big\{\pi'\in\mathcal P_n:\{C'\in\pi':C'\cap\{a,b\}=\varnothing\}=\{C_1,\ldots,C_r\}\big\}\,,
+\end{aligned}
+\end{equation*}
+on which it acts irreducibly. In every such set there is at least one partition $ \pi' $ in which $ a,b $ lie in distinct blocks such that $ Q_{n}( \pi', \pi' )= 1- \theta^{-1}>0$.
+Thus, $ Q_{n}$ is aperiodic which lifts invariance with respect to $ Q_{n}^{2}$ to $ \nu_{n}Q_{n}= \nu_{n}$. It is left  to prove \eqref{eq_supp_ent}, which we do in the remaining steps.\\
+
+
+
+\textbf{Step 2.}
+Next, we define 
+\begin{equation*}
+\begin{aligned}
+\delta_{n}:= 
+H( \nu_{n} \| \eta_{n} ) - H ( \nu_{n}Q_{n}\| \eta_{n})\geqslant 0 \,,
+\end{aligned}
+\end{equation*}
+and establish that $ \delta_{n}$ is increasing in $n$.
+
+For $ h: \mP_{n} \to \RR$ we write $ Q_{n}h ( \pi) = \sum_{\pi' } Q_{n}(\pi, \pi' ) h ( \pi')$ for the semigroup action. Throughout the proof, we will use the following property of relative entropy: if $Q$ is a Markov kernel, then 
+\begin{equation}\label{eq_dataprocessing}
+\begin{aligned}
+H( \nu Q \| \eta Q  ) \leqslant H ( \nu \| \eta)\,. 
+\end{aligned}
+\end{equation}
+Moreover, we define $f_{n,m} : \mP_{m} \to \RR$ with
+\begin{equation*}
+\begin{aligned}
+f_{n,m}  := \frac{\nu_{n}}{ \eta_{n}} \circ R_{n}\,,
+\end{aligned}
+\end{equation*}
+where we wrote  $ R_{n}:= R_{n+1:m}$ for the restriction of partitions to the subset $[n]$,
+and write $ f_{m}$ for $ f_{m,m}$.
+Following the proof of Lemma~\ref{lem_coherence},
+we have
+\begin{equation}\label{eq_supp1_rev}
+\begin{aligned}
+Q_m(h\circ R_n)=(Q_nh)\circ R_n\,,
+\end{aligned}
+\end{equation}
+for $m\ge n$ and every $h:\mathcal P_n\to\mathbb R$.
+Moreover, reversibility implies
+\begin{equation}\label{eq_revers}
+\begin{aligned}
+\nu_{n} Q_{n}= ( f_{n} \eta_{n})Q_{n}=( Q_{n}f_{n})\eta_{n} 
+\end{aligned}
+\end{equation}
+which, together with \eqref{eq_supp1_rev}, gives
+\begin{equation}\label{eq_rev}
+\begin{aligned}
+Q_{m} f_{n,m}
+= Q_{n} f_{n} \circ R_{n}
+= \frac{\nu_{n}Q_{n}}{ \eta_{n}} \circ R_{n}\,.
+\end{aligned}
+\end{equation}
+
+
+Now, we show that 
+\begin{equation}
+\begin{aligned}
+H ( \nu_{m} Q_{m}\| \eta_{m})
+&=
+H ( \nu_{n} Q_{n}\| \eta_{n})
++
+H ( \nu_{m} Q_{m}\| (Q_{m}f_{n,m} )\eta_{m})\label{eq_e2}\,.
+\end{aligned}
+\end{equation}
+To this end, we use the decomposition
+\begin{equation}\label{eq_supp3}
+\begin{aligned}
+	\log
+\frac{\nu_{m}Q_{m}}{ \eta_{m}}= \log Q_{m}f_{n,m} + \log \frac{\nu_{m}Q_{m}}{(Q_{m}f_{n,m} )\eta_{m}}  \,.
+\end{aligned}
+\end{equation}
+The last term on the right-hand side precisely generates the last term in \eqref{eq_e2}.
+Therefore, it is only left to recover $H ( \nu_{n} Q_{n}\| \eta_{n})$: by application of \eqref{eq_rev} we see that
+\begin{equation*}
+\begin{aligned}
+\sum_{\pi \in \mP_{m}} \nu_{m} Q_{m}( \pi ) \log{ (Q_{m}f_{n,m}) ( \pi) }  
+% =
+% \sum_{\pi \in \mP_{m}} \nu_{m} Q_{m}( \pi ) \log{ \frac{\nu_{n}Q_{n}\circ R_{n} (  \pi)}{ \eta_{n}\circ R_{n} (  \pi)}   }  \\
+&=
+\EE_{\nu_{m}Q_{m}}\bigg[ \log{ \frac{\nu_{n}Q_{n}\circ R_{n} }{ \eta_{n}\circ R_{n} }   }\bigg]\\
+&= \EE_{\nu_{n}Q_{n}}\Big[ \log{\frac{\nu_{n}Q_{n}}{\eta_{n}} }  \Big]
+=H ( \nu_{n} Q_{n}\| \eta_{n})
+\end{aligned}
+\end{equation*}
+where in the second equality we applied Lemma~\ref{lem_coherence}(ii).
+
+Likewise, we have 
+\begin{equation}
+\begin{aligned}
+H ( \nu_{m} \| \eta_{m})
+&=
+H ( \nu_{n} \| \eta_{n})
++
+H ( \nu_{m}\| f_{n,m} \eta_{m})\label{eq_e1}\,,
+\end{aligned}
+\end{equation}
+which follows the same decomposition as in \eqref{eq_supp3} but by inserting $ f_{n,m}$, and  using Lemma~\ref{lem_coherence}(i) thereafter.
+We subtract \eqref{eq_e2} from \eqref{eq_e1} and furthermore apply the bound,
+\begin{equation}\label{eq_e3}
+\begin{aligned}
+H ( \nu_{m} Q_{m}\| (Q_{m}f_{n,m} )\eta_{m})
+	=
+H ( \nu_{m} Q_{m} \| (f_{n,m}\eta_{m})Q_{m})
+\leqslant 
+H ( \nu_{m} \| f_{n,m}\eta_{m})\,,
+\end{aligned}
+\end{equation}
+which is a consequence of \eqref{eq_revers} and \eqref{eq_dataprocessing}.
+This establishes $ \delta_{n} \leqslant \delta_{m}$. \\
+
+\textbf{Step 3.} 
+Using Corollary~\ref{cor_intertw} we have
+\begin{equation*}
+\begin{aligned}
+ H ( \nu_{m}Q_{m}\| \eta_{m}) &\geqslant  H \big( (R_{a,b} )_{\ast}\nu_{m}Q_{m}\| (R_{a,b} )_{\ast}\eta_{m}\big) \\
+ &=  H \big( (R_{a,b} )_{\ast}\nu_{m}\| (R_{a,b} )_{\ast}\eta_{m}\big)
+ =
+ H ( \nu_{m-2}\| \eta_{m-2})\,,
+\end{aligned}
+\end{equation*}
+where the first inequality follows from \eqref{eq_dataprocessing}, and the second equality is a consequence of coherence, see Lemma~\ref{lem_coherence}.
+Overall, this establishes that for every $ m \geq n +2$ 
+\begin{equation}\label{eq_entropy1}
+\begin{aligned}
+\delta_{n} \leqslant \delta_{m}
+	\leqslant 
+H ( \nu_{m}\| \eta_{m}) -
+H ( \nu_{m-2}\| \eta_{m-2})\,.
+\end{aligned}
+\end{equation}
+Lastly, telescoping and applying \eqref{eq_entropy1} yields
+\begin{equation*}
+\begin{aligned}
+	 m \delta_{n}
+\leqslant H ( \nu_{n+2m}\| \eta_{n+2m}) -
+H ( \nu_{n}\| \eta_{n})
+\lesssim_{\theta} (\log{(n+2m)} )^{2}\,,
+\end{aligned}
+\end{equation*}
+where the last inequality follows from Lemma~\ref{lem_entropy1}.
+Dividing both sides by $m$ and taking the limit $m \to \infty$ yields \eqref{eq_supp_ent}.
+\end{proof}
+
+
+
+
+
+\appendix 
+
+
+\section{Moment estimates}
+
+First, we recall the following standard identity, see \cite[Lemma~5]{MWZZ2002}.
+\begin{lemma}\label{lem_q}
+Let $ \mu$ be an invariant probability measure of the split-merge process with kernel $ K_{1/ \theta} $. Then
+\begin{equation*}
+\begin{aligned}
+\EE_{\mu}\bigg[ \sum_{i} p_{i}^{2} \bigg] = \frac{1}{\theta + 1} \,.
+\end{aligned}
+\end{equation*}
+\end{lemma}
+
+
+Next, we define
+\begin{equation*}
+\begin{aligned}
+U_{n} := \EE_{\mu}\bigg[ \sum_{i} p_{i} ( 1- p_{i})^{n} \bigg]
+\quad \text{and} \quad 
+V_{n} := \EE_{\mu}\bigg[ \sum_{i \neq j } p_{i} p_{j} ( 1- p_{i}- p_{j})^{n} \bigg]\,.
+\end{aligned}
+\end{equation*}
+In other words, $ U_{n}$ is the (annealed) probability that we size-biasedly picked $ p_{i}$ after having drawn $n$-times a different block before.
+The following lemma shows that this probability vanishes linearly.
+
+\begin{lemma}\label{lem_U}
+	Let $ \mu$ be an invariant probability measure of the split-merge process with kernel $ K_{1/ \theta} $.
+Then 
+\begin{equation*}
+\begin{aligned}
+	U_{n} \leq \frac{2 \theta }{n+1} \,.
+\end{aligned}
+\end{equation*}
+\end{lemma}
+
+\begin{proof}
+	Let $ \mu$ be an invariant probability measure.
+We claim the identity
+\begin{equation}\label{eq_suppU}
+\begin{aligned}
+U_{n}- U_{n+1}+ \frac{2}{\theta} U_{n+1}- \frac{1}{\theta} V_{n}
+=
+\frac{2}{n+1} (1- U_{n+1})  
+\end{aligned}
+\end{equation}
+which implies the statement of the lemma, because $ 0 \leqslant U_{n+1} \leqslant U_{n}$  by definition, and 
+\begin{equation*}
+\begin{aligned}
+ V_{n} =
+ \EE_{\mu}\bigg[ \sum_{i \neq j } p_{i} p_{j} ( 1- p_{i}- p_{j})^{n} \bigg]
+ \leqslant 
+  \EE_{\mu}\bigg[ \sum_{i } p_{i} (1-p_{i})^{n} \sum_{j \neq i }p_{j}  \bigg]
+=  U_{n+1}\,.
+\end{aligned}
+\end{equation*}
+
+In order to prove \eqref{eq_suppU}, consider functions 
+\begin{equation*}
+\begin{aligned}
+F_{n}(p ):= \sum_{i}\big( 1- ( 1- p_{i})^{n})\,,
+\end{aligned}
+\end{equation*} 
+with $ F_{0}\equiv 0 $
+and  perform a single split-merge step. Stationarity yields $ \EE_{\mu} [K_{1/ \theta} F_{n}- F_{n}]=0$ and therefore yields a balance of splitting and merging when acting on $ F_{n}$. More precisely, 
+the splitting-contribution of $ \EE_{\mu} [K_{1/ \theta} F_{n}-F_{n}]$ is given in terms of 
+\begin{equation*}
+\begin{aligned}
+&\EE_{\mu}\bigg[
+	\sum_{i} p_{i}^{2}\bigg(
+	\int_{0}^{1} F_{n}(\mathbf{S}_{i,u }p) \, du - F_{n}(p)\bigg)
+\bigg]\\
+&=
+\EE_{\mu}\bigg[
+	\sum_{i} p_{i}^{2}\Big(
+	\int_{0}^{1} 
+	1
+	- ( 1- u p_{i})^{n}  - (1- (1-u)p_{i})^{n}
+	\ud u
+	+ ( 1- p_{i})^{n}\Big)
+\bigg]\\
+& =
+\frac{1}{1+ \theta}
+-  
+2
+\frac{1}{(n+1)}
+\Big(1
+-U_{n+1}\Big) 
++ U_{n}- U_{n+1}
+\,.
+\end{aligned}
+\end{equation*}
+where in the last step we applied Lemma~\ref{lem_q}, and used 
+\begin{equation*}
+\begin{aligned}
+\int_0^1(1-up_i)^n\,du
+=\frac{1-(1-p_i)^{n+1}}{(n+1)p_i}\,,\quad  \text{provided } p_i>0\,,
+\end{aligned}
+\end{equation*}
+as well as $\mathbb E_\mu\big[\sum_i p_i^2(1-p_i)^n\big]=U_n-U_{n+1}$.
+
+Likewise, the merging-contribution of $ \EE_{\mu} [K_{1/ \theta} F_{n}-F_{n}]$ is given in terms of 
+\begin{equation*}
+\begin{aligned}
+	&\frac{1}{\theta} 
+\EE_{\mu}\bigg[
+	\sum_{i \neq j } p_{i}p_{j}\bigg(
+	\int_{0}^{1} F_{n}(\mathbf{M}_{i,j}p) \, du -F_{n}(p)\bigg)
+\bigg]\\
+&=
+\frac{1}{ \theta}
+\EE_{\mu}\bigg[
+	\sum_{i \neq j } p_{i}p_{j}\Big( (1-p_{i})^{n} + (1-p_{j})^{n}- (1-(p_{i}+p_{j}))^{n}-1\Big)
+\bigg]\\
+& = \frac{2}{\theta}  U_{n+1} - \frac{1}{\theta} V_{n}
+- \frac{1}{1+ \theta}\,.
+\end{aligned}
+\end{equation*}
+Summing both merging and splitting contributions yields \eqref{eq_suppU}, since the constant terms cancel precisely.
+\end{proof}
+
+Equipped with Lemma~\ref{lem_U}, we can show that the expected number of distinct blocks $ R_{n}$ in a paintbox sample of size $n$ grows at most logarithmically when sampling with respect to an invariant split-merge measure.
+
+\begin{corollary}\label{cor_R}
+Let $ \mu$ be an invariant probability measure of the split-merge process with kernel $ K_{1/ \theta} $. Then 
+\begin{equation*}
+\begin{aligned}
+\EE_{\mu}[ R_{n}] \lesssim_{\theta} \log{n}\,.
+\end{aligned}
+\end{equation*}
+\end{corollary}
+
+\begin{proof}
+First, we notice that 
+$
+R_{n+1} - R_{n} = \mathds{1}_{Z_{n+1} \notin \{Z_{1}, \ldots, Z_{n}\}}
+$,
+which implies
+\begin{equation*}
+\begin{aligned}
+\EE_{\mu}[ R_{n+1} - R_{n}] 
+=
+\PP_{\mu} \big( Z_{n+1} \notin \{Z_{1}, \ldots, Z_{n}\}\big)
+=
+\EE_{\mu} \bigg[ \sum_{i} (1- p_{i})^{n} p_{i}\bigg]= U_{n}\,.
+\end{aligned}
+\end{equation*}
+Consequently, 
+$
+\EE_{\mu} [ R_{n}] 
+=
+1+\sum_{m=1}^{n-1} U_{m}
+$. The statement follows from Lemma~\ref{lem_U} because $ \sum_{m=1}^{n} m^{-1} \sim \log{n }$. 
+\end{proof}
+
+
+
+\begin{thebibliography}{DMWZZ04}
+
+\bibitem[BU20]{BenassiUeltschi2020}
+C.~Benassi and D.~Ueltschi.
+\newblock Loop correlations in random wire models.
+\newblock {\em Communications in Mathematical Physics}, 374(2):525--547, 2020.
+
+\bibitem[CGG22]{ChlebounGabrielGrosskinsky2022}
+P.~Chleboun, S.~Gabriel, and S.~Grosskinsky.
+\newblock {Poisson--Dirichlet} asymptotics in condensing particle systems.
+\newblock {\em Electronic Journal of Probability}, 27:1--35, 2022.
+
+\bibitem[CMUW23]{CaciEtAl2023}
+N.~Caci, P.~M{\"u}hlbacher, D.~Ueltschi, and S.~Wessel.
+\newblock {Poisson--Dirichlet} distributions and weakly first-order spin-nematic phase transitions.
+\newblock {\em Physical Review B}, 107(2):L020409, 2023.
+
+\bibitem[DMWZZ04]{DMWZZ2004}
+P.~Diaconis, E.~Mayer-Wolf, O.~Zeitouni, and M.~P.~W. Zerner.
+\newblock The {Poisson--Dirichlet} law is the unique invariant distribution for uniform split--merge transformations.
+\newblock {\em The Annals of Probability}, 32:915--938, 2004.
+
+\bibitem[Fen10]{Fen10}
+S.~Feng.
+\newblock {\em The {Poisson--Dirichlet} Distribution and Related Topics: Models and Asymptotic Behaviors}.
+\newblock Probability and Its Applications. Springer, Berlin, Heidelberg, 2010.
+
+\bibitem[GUW11]{GUW2011}
+C.~Goldschmidt, D.~Ueltschi, and P.~Windridge.
+\newblock Quantum {Heisenberg} models and their probabilistic representations.
+\newblock In R.~Sims and D.~Ueltschi, editors, {\em Entropy and the Quantum II}, volume 552 of {\em Contemporary Mathematics}, pages 177--224. American Mathematical Society, Providence, RI, 2011.
+
+\bibitem[HH09]{HarremoesHolst2009}
+P.~Harremo{\"e}s and K.~K. Holst.
+\newblock Convergence of Markov chains in information divergence.
+\newblock {\em Journal of Theoretical Probability}, 22(1):186--202, 2009.
+
+\bibitem[Kin78]{Kingman1978}
+J.~F.~C. Kingman.
+\newblock The representation of partition structures.
+\newblock {\em Journal of the London Mathematical Society}, 18:374--380, 1978.
+
+\bibitem[MWZZ02]{MWZZ2002}
+E.~Mayer-Wolf, O.~Zeitouni, and M.~P.~W. Zerner.
+\newblock Asymptotics of certain coagulation--fragmentation processes and invariant {Poisson--Dirichlet} measures.
+\newblock {\em Electronic Journal of Probability}, 7(8):1--25, 2002.
+
+\bibitem[Pit06]{Pitman2006}
+J.~Pitman.
+\newblock {\em Combinatorial Stochastic Processes}, volume 1875 of {\em Lecture Notes in Mathematics}.
+\newblock Springer, Berlin, 2006.
+
+\bibitem[Sch05]{Schramm2005}
+O.~Schramm.
+\newblock Compositions of random transpositions.
+\newblock {\em Israel Journal of Mathematics}, 147:221--243, 2005.
+
+\bibitem[Xu26]{xu2026agents}
+C.~Xu.
+\newblock {AI} agents for the working mathematician.
+\newblock \url{https://chaoxu.prof/posts/2026-07-18-ai-agents-for-the-working-mathematician.html}, July 2026.
+
+\end{thebibliography}
+
+
+
+
+\newpage
+\end{document}
