@@ -4,6 +4,8 @@ The aim of this experimental project in agentic AI was to prove that the Poisson
 
 *Abstract*: We study uniform split–merge dynamics on mass partitions. At each step, two parts are sampled independently in a size-biased manner. A repeated selection triggers a uniform split with probability $\beta_s$. Two distinct selections trigger a merge with probability $\beta_m$. We prove that $\mathrm{PD}(\beta_s/\beta_m)$ is the unique invariant law in the previously unresolved regime $\beta_s>\beta_m$, completing uniqueness for all parameter values. The proof uses finite paintbox partitions and a sublinear relative-entropy estimate to derive the Ewens sampling formula.
 
+DOI: 10.5281/zenodo.23967134
+
 The initial proof was generated entirely by a large language model (LLM), further details are given below. The prompt that initiated the task is available in [`prompt_initial.md`](prompts/prompt_initial.md). GPT-6 Astra was used for final mathematical review and proofreading.
 
 Planned work for a future version:
